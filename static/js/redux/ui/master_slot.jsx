@@ -15,7 +15,6 @@ GNU General Public License for more details.
 import PropTypes from 'prop-types';
 import React from 'react';
 import ClickOutHandler from 'react-onclickout';
-import Clipboard from 'clipboard';
 import uniq from 'lodash/uniq';
 import COLOUR_DATA from '../constants/colours';
 import * as SemesterlyPropTypes from '../constants/semesterlyPropTypes';
@@ -54,11 +53,6 @@ class MasterSlot extends React.Component {
   }
   showShareLink() {
     this.setState({ shareLinkShown: true });
-    const idEventTarget = `#clipboard-btn-course-${this.props.course.id}`;
-    const clipboard = new Clipboard(idEventTarget);
-    clipboard.on('success', () => {
-      $(idEventTarget).addClass('clipboardSuccess').text('Copied!');
-    });
   }
   hideShareLink() {
     this.setState({ shareLinkShown: false });
@@ -104,7 +98,6 @@ class MasterSlot extends React.Component {
     const shareLink = this.state.shareLinkShown ?
             (<ShareLink
               link={this.props.getShareLink(this.props.course.code)}
-              uniqueId={`course-${this.props.course.id}`}
               onClickOut={this.hideShareLink}
             />) :
             null;
@@ -202,7 +195,7 @@ MasterSlot.propTypes = {
   getShareLink: PropTypes.func.isRequired,
 };
 
-export const ShareLink = ({ link, onClickOut, uniqueId }) => (
+export const ShareLink = ({ link, onClickOut }) => (
   <ClickOutHandler onClickOut={onClickOut}>
     <div className="share-course-link-wrapper" onClick={e => e.stopPropagation()}>
       <div className="tip-border" />
@@ -215,9 +208,6 @@ export const ShareLink = ({ link, onClickOut, uniqueId }) => (
         onFocus={e => e.target.select()}
         readOnly
       />
-      <div className="clipboardBtn" id={`clipboard-btn-${uniqueId}`} data-clipboard-text={link}>
-        Copy to Clipboard
-      </div>
     </div>
   </ClickOutHandler>
 );
